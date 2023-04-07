@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Edytuj Profil </title>
+<link rel="stylesheet" href={{ url_for('static', filename='css/editProfile.css') }} />
+<link rel="stylesheet" href={{ url_for('static', filename='css/topStyle.css') }} />
+</head>
+<body>
+<div id="title">
+	<a href="/">
+		<img id="logo" src= {{ url_for('static', filename='images/logo.png') }} />
+	</a>
+	
+	<a href="/displayCategory?categoryId=1">
+		<img id="mężczyzna" src= {{ url_for('static', filename='images/mężczyzna.png') }} />
+	</a>
+
+	<a href="/displayCategory?categoryId=2">
+		<img id="kobieta" src= {{ url_for('static', filename='images/kobieta.png') }} />
+	</a>
+
+	<a href="/displayCategory?categoryId=3">
+		<img id="akcesoria" src= {{ url_for('static', filename='images/akcesoria.png') }} />
+	</a>
+
+	<a href="/displayCategory?categoryId=4">
+		<img id="biżuteria" src= {{ url_for('static', filename='images/biżuteria.png') }} />
+	</a>
+
+	<a href="/displayCategory?categoryId=5">
+		<img id="buty" src= {{ url_for('static', filename='images/buty.png') }} />
+	</a>
+
+	<a href="/show">
+		<img id="koment" src= {{ url_for('static', filename='images/koment.png') }} />
+	 </a>
+
+	<div id="kart">
+		<a class="link" href="/koszyk">
+			<img src={{url_for('static', filename='images/koszyk_zakupowy.png')}} id="koszykIcon" />
+			{{noOfItems}}
+		</a>
+	</div>
+	{% if not loggedIn %}
+	<div id="signInButton">
+		<a class="link" href="/loginForm">Zaloguj się</a>
+	</div>
+	{% else %}
+	<div class="dropdown">
+		<button class="dropbtn">Cześć, <br>{{firstName}}</button>
+		<div class="dropdown-content">
+			<a href="/account/profile">Twój Profil</a>
+			<hr>
+			<a href="/logout">Wyloguj się</a>
+		</div>
+	</div>
+	{% endif %}
+</div>
+
+<div class="display">
+	<h2>Edytuj Profil</h2>
+	<form action="/updateProfile" method="POST">
+		<p>Email:<input type="email" name="email" value={{profileData[1]}} readonly="readonly"></p>
+		<p>imie:<input type="text" name="firstName" value={{profileData[2]}}></p>
+		<p>nazwisko: <input type="text" name="lastName" value={{profileData[3]}}></p>
+		<p>Adres 1: <input type="text" name="address1" value={{profileData[4]}}></p>
+		<p>Adres 2: <input type="text" name="address2" value={{profileData[5]}}></p>
+		<p>Kod pocztowy: <input type="text" name="zipcode" value={{profileData[6]}}></p>
+		<p>Miasto: <input type="text" name="city" value={{profileData[7]}}></p>
+		<p>Ulica: <input type="text" name="state" value={{profileData[8]}}></p>
+		<p>Kraj: <input type="text" name="country" value={{profileData[9]}}></p>
+		<p>Numer telefonu: <input type="text" name="phone" value={{profileData[10]}}></p>
+		<input type="submit" value="Save">
+	</form>
+</div>
+</body>
+</html>
+

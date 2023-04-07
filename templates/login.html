@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>	First flask app </title>
+<link rel="stylesheet" href={{ url_for('static', filename='css/home.css') }} />
+<link rel="stylesheet" href={{ url_for('static', filename='css/topStyle.css') }} />
+</head>
+<body>
+	<div id="title">
+        <a href="/">
+            <img id="logo" src= {{ url_for('static', filename='images/logo.png') }} />
+        </a>
+        
+		<a href="/displayCategory?categoryId=1">
+			<img id="mężczyzna" src= {{ url_for('static', filename='images/mężczyzna.png') }} />
+		</a>
+	
+		<a href="/displayCategory?categoryId=2">
+			<img id="kobieta" src= {{ url_for('static', filename='images/kobieta.png') }} />
+		</a>
+	
+		<a href="/displayCategory?categoryId=3">
+			<img id="akcesoria" src= {{ url_for('static', filename='images/akcesoria.png') }} />
+		</a>
+	
+		<a href="/displayCategory?categoryId=4">
+			<img id="biżuteria" src= {{ url_for('static', filename='images/biżuteria.png') }} />
+		</a>
+	
+		<a href="/displayCategory?categoryId=5">
+			<img id="buty" src= {{ url_for('static', filename='images/buty.png') }} />
+		</a>
+
+		<a href="/show">
+            <img id="koment" src= {{ url_for('static', filename='images/koment.png') }} />
+         </a>
+
+    </div>
+<p> {{Błąd}} </p>
+<form action="/login" method="POST">
+	<p>Email: <input type="text" name="email"></p>
+	<p>Hasło: <input type="password" name="password"></p>
+	<p><input type="submit"></p>
+	<a href="/registerationForm">Zarejestruj się tu</a>
+</form>
+
+</body>
+</html>

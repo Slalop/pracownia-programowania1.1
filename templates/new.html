@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+      <head>
+         <title>dodaj nowy komentarz</title>
+         <link rel="stylesheet" href={{url_for('static', filename='css/delete.css')}}>
+         <link rel="stylesheet" href={{ url_for('static', filename='css/topStyle.css') }} />
+      </head>
+      <body>
+      <div id="title">
+         <a href="/">
+            <img id="logo" src= {{ url_for('static', filename='images/logo.png') }} />
+         </a>
+         
+         <a href="/displayCategory?categoryId=1">
+            <img id="mężczyzna" src= {{ url_for('static', filename='images/mężczyzna.png') }} />
+         </a>
+      
+         <a href="/displayCategory?categoryId=2">
+            <img id="kobieta" src= {{ url_for('static', filename='images/kobieta.png') }} />
+         </a>
+      
+         <a href="/displayCategory?categoryId=3">
+            <img id="akcesoria" src= {{ url_for('static', filename='images/akcesoria.png') }} />
+         </a>
+      
+         <a href="/displayCategory?categoryId=4">
+            <img id="biżuteria" src= {{ url_for('static', filename='images/biżuteria.png') }} />
+         </a>
+      
+         <a href="/displayCategory?categoryId=5">
+            <img id="buty" src= {{ url_for('static', filename='images/buty.png') }} />
+         </a>
+
+         <a href="/show">
+            <img id="koment" src= {{ url_for('static', filename='images/koment.png') }} />
+         </a>
+      
+         <div id="kart">
+            <a class="link" href="/koszyk">
+               <img src={{url_for('static', filename='images/koszyk_zakupowy.png')}} id="koszykIcon" />
+               {{noOfItems}}
+            </a>
+         </div>
+         {% if not loggedIn %}
+         <div id="signInButton">
+            <a class="link" href="/loginForm">Zaloguj się</a>
+         </div>
+         {% else %}
+         <div class="dropdown">
+            <button class="dropbtn">Cześć, <br>{{firstName}}</button>
+            <div class="dropdown-content">
+               <a href="/account/profile">Twój Profil</a>
+               <hr>
+               <a href="/logout">Wyloguj się</a>
+            </div>
+         </div>
+         {% endif %}
+         </div>
+   
+      <h3>Komentarze</h3>
+      <hr/>
+      
+      {%- for category, message in get_flashed_messages(with_categories = true) %}
+         <div class = "alert alert-danger">
+            {{ message }}
+         </div>
+      {%- endfor %}
+      
+      <form action = "{{ request.path }}" method = "post">
+         <label for = "nick">Nick</label><br>
+         <input type = "text" name = "nick" size='155' placeholder = "nick" /><br>
+         <label for = "produkt">Produkt</label><br>
+         <input type = "text" name = "produkt" size='155' placeholder = "produkt" /><br>
+         <label for = "koment">Komentarz</label><br>
+         <textarea name = "koment" rows="10" cols="150" placeholder = "koment"></textarea><br>
+         <input type = "submit" value = "Dodaj Komentarz" />
+      </form>
+      
+   </body>
+</html>

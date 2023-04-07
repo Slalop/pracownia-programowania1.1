@@ -1,0 +1,8 @@
+table, th, td {
+            border: 1px solid black;
+        }
+
+#itemImage {
+	height: 100px;
+	width: 80px;
+}

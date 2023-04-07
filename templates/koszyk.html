@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Twój koszyk</title>
+<link rel="stylesheet" href={{url_for('static', filename='css/koszyk.css')}} />
+<link rel="stylesheet" href={{url_for('static', filename='css/topStyle.css') }} />
+</head>
+<body>
+<div id="title">
+	<a href="/">
+	<img id="logo" src= {{ url_for('static', filename='images/logo.png') }} />
+	</a>
+	
+	<a href="/displayCategory?categoryId=1">
+		<img id="mężczyzna" src= {{ url_for('static', filename='images/mężczyzna.png') }} />
+	</a>
+
+	<a href="/displayCategory?categoryId=2">
+		<img id="kobieta" src= {{ url_for('static', filename='images/kobieta.png') }} />
+	</a>
+
+	<a href="/displayCategory?categoryId=3">
+		<img id="akcesoria" src= {{ url_for('static', filename='images/akcesoria.png') }} />
+	</a>
+
+	<a href="/displayCategory?categoryId=4">
+		<img id="biżuteria" src= {{ url_for('static', filename='images/biżuteria.png') }} />
+	</a>
+
+	<a href="/displayCategory?categoryId=5">
+		<img id="buty" src= {{ url_for('static', filename='images/buty.png') }} />
+	</a>
+
+	<a href="/show">
+		<img id="koment" src= {{ url_for('static', filename='images/koment.png') }} />
+	 </a>
+
+	<div id="kart">
+		<a class="link" href="/koszyk">
+		<img src={{url_for('static', filename='images/koszyk_zakupowy.png')}} id="koszykIcon" />
+		{{noOfItems}}
+		</a>
+	</div>
+	{% if not loggedIn %}
+	<div id="signInButton">
+		<a class="link" href="/loginForm">Zaloguj się</a>
+	</div>
+	{% else %}
+	<div class="dropdown">
+		<button class="dropbtn">Cześć, <br>{{firstName}}</button>
+		<div class="dropdown-content">
+			<a href="/account/profile">Twój Profil</a>
+			<hr>
+			<a href="/logout">Wyloguj się</a>
+		</div>
+	</div>
+	{% endif %}
+</div>
+<div id="koszykItems">
+	<h2>Twój koszyk</h2>
+	<div id="tableItems">
+		{% for row in products %}
+		<div>
+			<hr id="seperator">
+			<div id="itemImage">
+				<img src={{url_for('static', filename='uploads/'+row[3])}} id="image"/>
+			</div>
+			<div id="itemName">
+				<span id="itemNameTag">{{row[1]}}</span><br>
+				In stock<br>
+				<a href="/removeFromkoszyk?productId={{row[0]}}">Usuń</a>
+			</div>
+			<div id="itemPrice">
+				{{row[2]}}zł
+			</div>
+		</div>
+		{% endfor %}
+		<hr id="seperator">
+		<div id="total">
+			<span id="subtotal">Cena całkowita</span> : {{totalPrice}}zł
+		</div>
+	</div>
+</div>
+<a href="/checkout">Przejdź do kasy</a>
+</body>
+</html>

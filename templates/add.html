@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>dodaj produkt</title>
+<link rel="stylesheet" href={{ url_for('static', filename='css/home.css') }} />
+<link rel="stylesheet" href={{ url_for('static', filename='css/topStyle.css') }} />
+</head>
+<body>
+<div id="title">
+	<a href="/">
+		<img id="logo" src= {{ url_for('static', filename='images/logo.png') }} />
+	</a>
+	
+	<a href="/add">
+		<img id="add" src= {{ url_for('static', filename='images/dodaj.png') }} />
+	</a>
+
+	<a href="/update">
+		<img id="update" src= {{ url_for('static', filename='images/update.png') }} />
+	</a>
+
+	<a href="/delete">
+		<img id="delete" src= {{ url_for('static', filename='images/usuń.png') }} />
+	</a>
+
+	<a href="/xml">
+		<img id="xml" src= {{ url_for('static', filename='images/xml.png') }} />
+	</a>
+
+	<div id="kart">
+		<a class="link" href="/koszyk">
+			<img src={{url_for('static', filename='images/koszyk_zakupowy.png')}} id="koszykIcon" />
+			{{noOfItems}}
+		</a>
+	</div>
+	{% if not loggedIn %}
+	<div id="signInButton">
+		<a class="link" href="/loginForm">Zaloguj się</a>
+	</div>
+	{% else %}
+	<div class="dropdown">
+		<button class="dropbtn">Cześć, <br>{{firstName}}</button>
+		<div class="dropdown-content">
+			<a href="/account/profile">Twój Profil</a>
+			<hr>
+			<a href="/logout">Wyloguj się</a>
+		</div>
+	</div>
+	{% endif %}
+	</div>
+<h2>Dodaj Produkt</h2>
+<form action="/addItem" method="POST" enctype="multipart/form-data">
+	Nazwa: <input type="text" name="name"><br>
+	Cena: <input type="text" name="price"><br>
+	Description: <textarea name="description" rows=3 cols="40"></textarea><br>
+	Zdiecie: <input type="file" name="image"><br>
+	Zbiór: <input type="text" name="stock"><br>
+	Kategorie: <select name="category">
+		{% for row in categories %}
+			<option value="{{row[0]}}">{{row[1]}}</option>
+		{% endfor %}
+	</select><br>
+	<input type="submit">
+</form>
+</body>
+</html>
