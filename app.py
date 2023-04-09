@@ -1,9 +1,10 @@
-from flask import Flask, request, flash, url_for, redirect, render_template
+from flask import Flask, jsonify, request, flash, url_for, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask import *
 import sqlite3, hashlib, os
 from werkzeug.utils import secure_filename
 from restrictions import limit_price
+import xml.etree.ElementTree as ET
 
 
 app = Flask(__name__)
@@ -46,14 +47,17 @@ def getLoginDetails():
 @app.route("/", methods=["GET"])
 def root():
     loggedIn, firstName, noOfItems = getLoginDetails()
-    with sqlite3.connect('database.db') as conn:
-        cur = conn.cursor()
-        cur.execute('SELECT productId, name, price, description, image, stock FROM products')
-        itemData = cur.fetchall()
-        cur.execute('SELECT categoryId, name FROM categories')
-        categoryData = cur.fetchall()
-    itemData = parse(itemData)   
-    return render_template('home.html', itemData=itemData, loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems, categoryData=categoryData)
+    return render_template('home.html', loggedIn=loggedIn, firstName=firstName, noOfItems=noOfItems)
+
+@app.route('/products', methods=["GET"])
+def products():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM products")
+    products = c.fetchall()
+    products_list = [{'productId': p[0], 'name': p[1], 'price': p[2], 'image': p[4]} for p in products]
+    conn.close()
+    return jsonify({'products': products_list})
 
 @app.route("/displayCategory")
 def displayCategory():
@@ -97,7 +101,7 @@ def addTokoszyk():
                 conn.rollback()
                 msg = "Error occured"
         conn.close()
-        return redirect(url_for('root'))
+        return redirect(url_for('koszyk'))
 
 @app.route("/koszyk")
 def koszyk():
@@ -134,7 +138,7 @@ def removeFromkoszyk():
             conn.rollback()
             msg = "error occured"
     conn.close()
-    return redirect(url_for('root'))
+    return redirect(url_for('koszyk'))
 
 @app.route("/add")
 def admin():
@@ -171,7 +175,7 @@ def addItem():
                 conn.rollback()
         conn.close()
         print(msg)
-        return redirect(url_for('root'))
+        return redirect(url_for('admin'))
         
 @app.route("/delete")
 def delete():
@@ -196,7 +200,7 @@ def deleteItem():
             msg = "Error occured"
     conn.close()
     print(msg)
-    return redirect(url_for('root'))
+    return redirect(url_for('delete'))
 
 @app.route("/update")
 def update():
@@ -210,11 +214,15 @@ def update():
 @app.route("/updateItem", methods=["GET", "POST"])    
 def updateItem():
     if request.method == "POST":
-        price = float(request.form['price'])
-        min_price = float(0)
-        max_price = float(100)
-        price = limit_price(price, min_price, max_price)
+
         name = request.form['name']
+        price = float(request.form['new_price'])
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        old_price = cursor.execute("SELECT price FROM products WHERE name=?", (name,)).fetchone()[0]
+        min_price = float(10)
+        max_price = float(200)
+        price = limit_price(price, old_price, min_price, max_price)
         with sqlite3.connect('database.db') as conn:
             try:
                 cur = conn.cursor()
@@ -227,6 +235,24 @@ def updateItem():
                 conn.close()
                 print(msg)
     return redirect(url_for('update'))
+
+@app.route('/xml', methods=["GET", "POST"])
+def export_to_xml():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM products')
+    products = c.fetchall()
+    conn.close()
+
+    root = ET.Element('products')
+    for product in products:
+        product_xml = ET.SubElement(root, 'product')
+        ET.SubElement(product_xml, 'name').text = product[1]
+        ET.SubElement(product_xml, 'price').text = str(product[2])
+        ET.SubElement(product_xml, 'description').text = product[3]
+    tree = ET.ElementTree(root)
+    tree.write('xml/produkty.xml')
+    return 'Dane zostały wyeksportowane do pliku XML!'
 
 @app.route("/account/profile")
 def profileHome():

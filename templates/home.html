@@ -1,9 +1,33 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>Witaj</title>
+<meta charset="UTF-8">
+<title>Produkty</title>
 <link rel="stylesheet" href={{ url_for('static', filename='css/home.css') }} />
 <link rel="stylesheet" href={{ url_for('static', filename='css/topStyle.css') }} />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document).ready(function() {
+		// pobieranie danych z endpointu REST
+		$.get('/products', function(data) {
+			// tworzenie elementów HTML
+			$.each(data.products, function(index, product) {
+				var item = $('<div>').addClass('product-item');
+				var image = $('<img id="itemImage">').attr('src', '/static/uploads/' + product.image);
+				var name = $('<h3>').text(product.name);
+				var price = $('<p>').text(product.price + ' zł');
+				// dodanie elementów do elementu głównego
+				item.append(name);
+				item.append(image);
+				item.append(price);
+				// dodanie elementu głównego do listy produktów
+				$('#products-list').append(item);
+			});
+		});
+	});
+</script>
+
+
 </head>
 <body>
 <div id="title">
@@ -56,46 +80,13 @@
 	</div>
 	{% endif %}
 </div>
-<div class="display">
-	<div class="displayCategory">
-		<h2>Kupuj według kategorii: </h2>
-		<ul>
-			{% for row in categoryData %}
-			<li><a href="/displayCategory?categoryId={{row[0]}}">{{row[1]}}</a></li>
-			{% endfor %}
-		</ul>
+	<div id="info">
+		<h2>Aby rozpocząć zakupy przejdż do wybranej kategori u góry ekranu </h2>
 	</div>
 	<div>
-		<h2>Przedmioty</h2>
-		{% for data in itemData %}
-		<table>
-			<tr id="productName">
-				{% for row in data %}
-				<td>
-					{{row[1]}}
-				</td>
-				{% endfor %}
-			</tr>
-			<tr id="productImage">
-				{% for row in data %}
-				<td>
-					<a href="/productDescription?productId={{row[0]}}">
-						<img src={{ url_for('static', filename='uploads/' + row[4]) }} id="itemImage" />
-					</a>
-				</td>
-				{% endfor %}
-			</tr>
-			<tr id="productPrice">
-				{% for row in data %}
-				<td>
-					{{row[2]}}zł
-				</td>
-				{% endfor %}
-			</tr>
-		</table>
-		{% endfor %}
+		<h1 id="opis">Spis dostępnych produktów w sklepie:</h1>
+		<div id="products-list"></div>
 	</div>
-</div>
 </body>
 </html>
 
