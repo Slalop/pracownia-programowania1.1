@@ -4,6 +4,7 @@ from flask import *
 import sqlite3, hashlib, os
 from werkzeug.utils import secure_filename
 from restrictions import limit_price
+from ItemCreationRestriction import check_price
 import xml.etree.ElementTree as ET
 
 
@@ -157,6 +158,9 @@ def addItem():
         description = request.form['description']
         stock = int(request.form['stock'])
         categoryId = int(request.form['category'])
+        mini_price = float(10.0)
+        maxi_price = float(200.0)
+        price = check_price(price, mini_price, maxi_price)
 
         #Uploading image procedure
         image = request.files['image']
